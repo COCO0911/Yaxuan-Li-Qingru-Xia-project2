@@ -1,0 +1,340 @@
+#start {
+  font-size: 40px;
+  text-align: center;
+  font-weight: bold;
+  line-height: 120px;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+#start h1 {
+  font-weight: bold;
+  color: #fff;
+}
+.defaultbtn {
+  font-size: 30px;
+  line-height: 60px;
+  text-align: center;
+  width: 200px;
+  border-radius: 10px;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  margin: 30px auto;
+  display: block;
+}
+/* 游戏样式 */
+#game .btnbox {
+  text-align: center;
+}
+#game .btnbox button,
+#game .btnbox a {
+  display: inline-block;
+  float: none;
+}
+#game .level {
+  width: 100%;
+  color: #333;
+  line-height: 40px;
+  padding: 0;
+  text-align: left;
+  float: left;
+}
+#game .level span {
+  color: #333;
+  font-size: 14px;
+  margin: 0 10px;
+}
+#game .Row:not(:first-child) .Row-letter sup {
+  display: none;
+}
+#game #keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  width: 90%;
+  max-width: 900px;
+  text-align: center;
+  margin: auto;
+}
+#game body,
+#game html {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+#game .key.clicked {
+  background-color: red;
+  border-color: #555;
+}
+#game .key:active {
+  background-color: red;
+  border-color: #555;
+}
+#game .row {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  position: center;
+}
+#game .key {
+  width: calc(12.5% - 10px);
+  height: 50px;
+  margin: 5px;
+  padding: 0;
+  border: 2px solid #999;
+  background-color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+#game hr {
+  width: 95%;
+}
+#game #backspace,
+#game #enter,
+#game #new-game {
+  width: calc(25% - 10px);
+}
+#game .key#enter[disabled] {
+  background-color: orange;
+  border-color: #999;
+  cursor: not-allowed;
+}
+#game #current-guess {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 90px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 auto;
+  width: 300px;
+}
+#game #current-guess > div {
+  display: flex;
+}
+#game .letter-slot {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #ccc;
+  text-align: center;
+  line-height: 40px;
+}
+#game #current-guess.incorrect {
+  animation: shake 0.5s;
+}
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+#game .correct {
+  background-color: green;
+}
+#game .incorrect {
+  background-color: orange;
+}
+#game .not-present {
+  background-color: grey;
+}
+#game .game_rows {
+  flex-grow: 1;
+  height: calc(100vh - 380px);
+  overflow: auto;
+}
+#game .game_rows .Row {
+  text-align: center;
+  margin-bottom: 10px;
+}
+#game .game_rows .Row .Row-letter {
+  font-size: 14px;
+  width: 30px;
+  line-height: 30px;
+  padding: 0 10px;
+  display: inline-block;
+}
+#game .green {
+  background-color: green;
+}
+#game .orange.green {
+  background-color: green;
+}
+#game .orange {
+  background-color: orange;
+}
+#game .grey.orange {
+  background-color: orange;
+}
+#game .grey {
+  background-color: grey;
+}
+#game .key.ugly {
+  background-color: #999;
+}
+#game .defaultbtn {
+  font-size: 14px;
+  line-height: 40px;
+  width: 90px;
+  color: #333;
+  float: right;
+  margin: 0 4px;
+}
+.game_rows {
+  margin-top: 4px;
+  transition: all 0.6s;
+}
+.game_rows .Row-letter {
+  margin: 0 4px;
+}
+/* 规则 */
+#shadowbox {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+#shadowbox .contentbox {
+  overflow: auto;
+  max-height: 80vh;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  max-width: 600px;
+  width: 80%;
+  display: block;
+  margin: auto;
+  background-color: #fff;
+  border-radius: 10px;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 0px 4px #ccc;
+}
+#shadowbox .contentbox .tit {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 60px;
+  text-align: center;
+}
+#shadowbox .contentbox .desc {
+  font-size: 14px;
+  line-height: 30px;
+  padding: 30px;
+  text-align: left;
+  color: #333;
+}
+#shadowbox .footers {
+  border-top: 1px solid #ccc;
+}
+#shadowbox .footers button,
+#shadowbox .footers a {
+  font-size: 14px;
+  line-height: 30px;
+  display: block;
+  margin: 10px auto;
+  width: 120px;
+  float: none;
+}
+.RuleBox .tit {
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 90px;
+  color: #333;
+}
+/* 规则文字信息样式 */
+.RuleBox {
+  font-size: 14px;
+  text-align: left;
+  line-height: 40px;
+  padding: 30px;
+}
+.RuleBox ul {
+  padding: 10px 0;
+}
+.RuleBox ul li {
+  padding-left: 10px;
+  font-weight: bold;
+}
+.alertBox {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+.alertBox .content {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 400px;
+  width: 80%;
+  background-color: #fff;
+  box-shadow: 0px 0px 4px #ccc;
+  padding: 20px;
+}
+.alertBox .content .tit {
+  font-size: 24px;
+  line-height: 60px;
+  font-weight: bold;
+  border-bottom: 1px solid #ccc;
+}
+.alertBox .content .desc {
+  padding: 10px 0;
+  font-size: 14px;
+  color: #333;
+  line-height: 30px;
+}
+.alertBox .content .footer {
+  border-top: 1px solid #ccc;
+  padding: 10px 0;
+}
+.alertBox .defaultbtn {
+  line-height: 30px;
+  display: block;
+  float: none;
+  margin: auto;
+  transition: all 0.6s;
+}
+#bjbox {
+  background: transparent url('https://picsum.photos/1200/1300') no-repeat top fixed;
+  background-size: cover;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+#bjbox #start {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 30px;
+  border-radius: 10px;
+}
+.defaultbtn:hover {
+  background-color: #fc944f;
+  color: #fff;
+  cursor: pointer;
+  transform: scale(1.1);
+  transition: all 0.6s;
+}
