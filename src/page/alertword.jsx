@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 
 export default function AlertWord (props) {
-  // 子向父传值
   const { setWord } = props;
   const changeState = (event) => {
     setWord(false)

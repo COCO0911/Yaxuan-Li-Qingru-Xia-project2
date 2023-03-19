@@ -1,7 +1,6 @@
 /*  */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-/* 頁面跳轉 */
 import { useNavigate } from "react-router-dom";
 import Rule from './rule'
 const FatherContext = React.createContext({});
@@ -9,7 +8,7 @@ const FatherContext = React.createContext({});
 export default function Home (props) {
   let type = Number(useSelector(state => state.type));
   const dispatch = useDispatch();
-  let [Making, setMaking] = useState(false);/* 弹框显示隐藏 */
+  let [Making, setMaking] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {

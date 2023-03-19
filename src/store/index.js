@@ -1,8 +1,7 @@
 import { createStore } from "redux";
 function reducer (state = {
-  /* 游戏难度 */
+  /* difficulty */
   type: localStorage.getItem('type') == null ? 0 : localStorage.getItem('type'),
-  /* 规则弹框 */
   ruleState: false
 }, action) {
   console.log(state)

@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import Ruletext from './ruletext'
 import { Outlet, Link } from 'react-router-dom';
 export default function Rule (props) {
-  // 子向父传值
+  // to parent root
   const { setMaking } = props;
   const changeState = (event) => {
     setMaking(false)

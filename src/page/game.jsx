@@ -2,43 +2,32 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from 'react-router-dom';
-/* 頁面跳轉 */
 import { useNavigate, Link } from "react-router-dom";
-/* 顶部文字组件 */
 import Inputbox from './inputbox'
-/* 弹框组件 */
 import AlertBoxenter from './alertboxenter'
-/* 位数缺少提示 */
 import AlertBoxdif from './alertboxdif'
-/* 单词提示 */
 import AlertWord from './alertword'
-/* 规则弹框 */
 import Rule from './rule'
 export const FatherContext = React.createContext({});
 export default function Game (props) {
-  /* 获取存储在redux中的状态 */
+  /* get redux state */
   let type = Number(useSelector(state => state.type));
-  /* 规则弹框显示隐藏 */
+  /* rule page pop-up */
   let ruleState = useSelector(state => state.ruleState)
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  /* 全局存储单词（正确答案） */
+  /* store the right anser */
   const [targetWord, settargetWord] = useState(localStorage.getItem('targetWord') === null ? [] : JSON.parse(localStorage.getItem('targetWord')));
-  /* 输入框输入的字符 */
   const [currentGuess, setcurrentGuess] = useState(localStorage.getItem('currentGuess') === null ? [] : JSON.parse(localStorage.getItem('currentGuess')));
-  /* 结果列表 */
+  /* result list */
   const [guesslist, setguesslist] = useState(localStorage.getItem('guesslist') === null ? [] : JSON.parse(localStorage.getItem('guesslist')));
-  /* 是否显示晃动css3效果 */
   const [shake, setshake] = useState(false);
-  /* 防止重复点击提交 */
   const [enterclick, setenterclick] = useState(true);
-  /* 位数缺少弹框 */
   const [deficiency, setdeficiency] = useState(false);
-  /* 提示点击enter重新开始游戏弹框 */
+  /* click enter to start game */
   const [enterState, setenterState] = useState(false);
-  /*提示单词是否有效 */
+  /*check the valid word */
   const [Word, setWord] = useState(false);
-  /* 页面初始化获取单词 */
   if (targetWord.length === 0) {
     getTargetWord();
   }
@@ -47,7 +36,7 @@ export default function Game (props) {
     let url = window.location.href;
     console.log(url);
     if (url.indexOf('normal') != -1) {
-      /* 如果是简单的 */
+      /* easy game */
       console.log(type);
       if (type != 1) {
         localStorage.removeItem('targetWord');
@@ -59,7 +48,7 @@ export default function Game (props) {
         window.location.reload();
       }
     } else if (url.indexOf('hard') != -1) {
-      /* 如果是困难的 */
+      /* hard game */
       if (type != 2) {
         localStorage.removeItem('targetWord');
         localStorage.removeItem('currentGuess');
@@ -74,12 +63,11 @@ export default function Game (props) {
   }
 
   // console.log(useParams())
-  /* 页面初始化调用 */
   useEffect(() => {
-    /* 修改链接状态 */
+    /* change the state */
     changeworldState()
   }, []);// eslint-disable-line
-  /* 显示当前选择的难度 */
+  /* show the current difficulty */
   function showDegree () {
     if (type === 1) {
       return 'normal'
@@ -87,57 +75,43 @@ export default function Game (props) {
       return 'hard'
     }
   }
-  /* 页面键盘点击事件绑定 */
   const keySubmit = (e) => {
     run(e.target.value)
   }
-  /* 页面程序运行 */
   function run (val) {
-    let size = type === 1 ? 6 : 7;/* 答题的次数 */
+    let size = type === 1 ? 6 : 7;/* 6 attemps for hard / 7 attempt for easy */
     let key = val
     var p = /^[A-Za-z]+$/;
-    /* 如果输入的为26个英文字母 */
+    /* input should be alphabet */
     if (p.test(key) && key.length === 1) {
-      /* 追加字符 */
       if (currentGuess.length < size) {
-        let guess = currentGuess;/* 当前的单词 */
-        guess.push(key.toUpperCase());/* 追加键入的单词 */
-        /* 设置输入框显示*/
+        let guess = currentGuess;/* current word */
+        guess.push(key.toUpperCase());/* add new guesses */
         setcurrentGuess([...guess])
-        /* 存储设定的单词 */
         localStorage.setItem('currentGuess', JSON.stringify(currentGuess))
       }
     } else if (key === "Backspace" || key === 'backspace') {
-      /* 撤销键入 */
       let guess = currentGuess.slice(0, -1);
-      /* 重置输入框显示*/
       setcurrentGuess(guess)
       localStorage.setItem('currentGuess', JSON.stringify(guess))
     } else if (key === "Escape" || key === "newgame") {
-      /* 重新开始游戏 */
       newgame('restart')
     } else if (key === "Enter" || key === "enter") {
-      /* 增加状态，防止重复点击提交 */
       if (enterclick === true) {
         setenterclick(false)
-        /* 3秒后可以再次点击提交 */
         setTimeout(function () {
           setenterclick(true)
         }, 3000)
         if ((type === 1 && guesslist.length === 6) || (type === 2 && guesslist.length === 5)) {
-          /* 游戏已结束,让用户重新开始 */
+          /* restart the game if the game is over */
           setenterState(true)
         } else {
-          /* 如果满足指定长度 */
           if (currentGuess.length === size) {
-            /* 验证结果 */
             Validate()
-            // /* 清空输入框字符显示 */
             // setcurrentGuess([])
-            /* 清空本地存储输入框字符 */
             localStorage.setItem('currentGuess', JSON.stringify([]))
           } else {
-            /* 输入不足指定位数 */
+            /* word too short */
             setdeficiency(true)
           }
         }
@@ -145,34 +119,30 @@ export default function Game (props) {
       }
     }
   }
-  /* 全部正确显示提示信息 */
+  /* if success alert  */
   function newgame (state) {
     let result = ''
-    /* 如果是全部答对，重新开始 */
     if (state === 'success') {
       result = window.confirm('Congratulations!  Would you like to try again?');
     } else if (state === 'restart') {
-      // 如果是点击按钮重新开始
       result = window.confirm('Are you sure you want to restart the game?');
     }
 
     if (result === true) {
       localStorage.clear()
-      /* 跳转首页，重新选择难度开始游戏 */
+      /* choose the difficulty */
       navigate(`/home`);
     } else {
 
     }
   }
-  /* 验证结果 */
+
   function Validate () {
-    /* 验证是否为有效单词 */
     //Check if it is a valid english word
     fetch(
       `https://api.dictionaryapi.dev/api/v2/entries/en/${currentGuess.join('').toLocaleLowerCase()}`
     ).then((res) => {
       if (res.status == "404") {
-        /* 左右晃动动画 */
         setshake(true);
         setWord(true)
         setTimeout(function () {
@@ -184,32 +154,29 @@ export default function Game (props) {
     });
 
   }
-  /* 添加数据到结果列表 */
+ 
   function addGuess (guess) {
     if (guess.length !== 0) {
       let guessdata = guesslist;
       guessdata.push(guess)
       setguesslist(guessdata)
-      /* 更新输入框字符显示 */
       setcurrentGuess([])
       localStorage.setItem('guesslist', JSON.stringify(guesslist))
     }
-    /* 开始新游戏 */
-    // 如果列表没数据开始新游戏
+  
     if (guesslist.length === 0 || guesslist === []) {
       restart();
       getTargetWord();
     } else {
     }
   }
-  /* 验证结果 */
+  /* a function to check the spelling */
   async function checkSpelling () {
     // const response = await fetch(`https://trex-sandwich.com/ajax/word/${currentGuess.join('').toLocaleLowerCase()}`);
     //     const data = await response.json();
     const data = JSON.parse(localStorage.getItem('targetWord')).join('').toLocaleLowerCase()
 
     if (data === currentGuess.join('').toLocaleLowerCase()) {
-      /* 回答正确 */
       let result = currentGuess.map((ele) => {
         let data = {
           data: ele,
@@ -217,30 +184,27 @@ export default function Game (props) {
         }
         return data;
       })
-      /* 重置输入框显示 */
       restart()
-      /* 添加数据到结果列表 */
+      /* add data into result */
       addGuess(result);
-      /* 回答正确重新开始 */
       newgame('success')
     } else {
-      /* 回答错误 */
       let result = [];
       currentGuess.forEach((ele, i) => {
-        /* 相同且位置正确 */
+        /* right place */
         if (targetWord[i] === ele) {
           result.push({
             data: ele,
             state: 'green'
           })
         } else if (targetWord.indexOf(ele) !== -1 && targetWord[i] !== ele) {
-          /* 存在但位置不正确 */
+          /* exist, the wrong place*/
           result.push({
             data: ele,
             state: 'orange'
           })
         } else if (targetWord.indexOf(ele) === -1) {
-          /* 不存在 */
+          /* not exist */
           result.push({
             data: ele,
             state: 'gray'
@@ -248,18 +212,16 @@ export default function Game (props) {
         }
       })
 
-      /* 左右晃动动画 */
       setshake(true);
       setTimeout(function () {
         setshake(false);
-        /* 添加数据到结果列表 */
+        /* add the data to the result */
         addGuess(result);
-        /* 如果大于指定次数，需要重新开始游戏 */
+        /* if guesses are more than attemp， restart the game*/
         if ((type === 1 && guesslist.length === 6) || (type === 2 && guesslist.length === 5)) {
           let result = window.confirm(`Failure,The answer ${targetWord}, whether to restart the game?`);
           if (result === true) {
             localStorage.clear()
-            /* 跳转首页，重新选择难度开始游戏 */
             navigate(`/home`);
           }
         }
@@ -268,20 +230,20 @@ export default function Game (props) {
     }
 
   }
-  /* 全局获取初始化的单词 */
+  /* initial the word */
   async function getTargetWord () {
     const words = await getWords(1);
     settargetWord(words.word.toUpperCase().split(''))
     localStorage.setItem('targetWord', JSON.stringify(words.word.toUpperCase().split('')))
   }
-  /* 重置输入的内容 */
+  /* reset the word */
   function restart () {
     let size = type === 1 ? 6 : 7;
-    /* 更新输入框字符显示 */
+    /* update the letter in input field */
     setcurrentGuess([])
     localStorage.setItem('currentGuess', JSON.stringify([]));
   };
-  /* 获取单词接口 */
+  /* get word */
   async function getWords (count) {
     const response = await fetch(`https://trex-sandwich.com/ajax/word?count=${count}&length=${type === 1 ? 6 : 7}`);
     const data = await response.json();
@@ -371,11 +333,11 @@ export default function Game (props) {
           <button id="new-game" className="key" value="newgame" onClick={keySubmit}>New Game</button>
         </div>
       </div>
-      {/* 规则弹框 */}
+      {/* rule page pop up */}
       {ruleState === true ? <Rule /> : ''}
-      {/* 提示位数缺少弹框 */}
+      {/* alert the word is too short */}
       {deficiency === true ? <AlertBoxdif setdeficiency={setdeficiency} msg={`pleace input ${type === 1 ? 6 : 7} characters`} ></AlertBoxdif> : ''}
-      {/* 提示重新开始弹框 */}
+      {/* alert to start the new game */}
       {enterState === true ? <AlertBoxenter setenterState={setenterState} msg={`Please click new game to restart the game`}></AlertBoxenter> : ''
       }
       {Word === true ? <AlertWord setWord={setWord} msg={`Please enter a valid word`}></AlertWord> : ''

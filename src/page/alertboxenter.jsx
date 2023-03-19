@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 
 export default function Ruletext (props) {
-  // 子向父传值
   const { setenterState } = props;
   const changeState = (event) => {
     setenterState(false)
